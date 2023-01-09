@@ -1,48 +1,44 @@
-import os
-import aiohttp
-import asyncio
-import pysmartthings
 import playwright
-from playwright import async_playwright
+import os
 
-# Create an instance of Playwright
-async with async_playwright() as p:
-    # Get the current browser instance
-    browser = p.chromium
-    # Open a new context
-    context = await browser.new_context()
-    # Create a new page
-    page = await context.new_page()
-    # Go to TikTok
-    await page.goto('https://www.tiktok.com/trending')
-    # Select the first video from the trend list
-    first_video = await page.query_selector('div.trend-item-box > a')
-    # Get the link for the video
-    link = await first_video.getAttribute('href')
-    # Open the video page
-    await page.goto(link)
-    # Select the video element
-    video = await page.query_selector('video')
-    # Get the video source
-    video_src = await video.getAttribute('src')
+# Create a new Playwright instance
+with playwright.chromium.launch() as browser:
+    page = browser.newPage()
+
+    # Open the TikTok trending page
+    page.goto('https://www.tiktok.com/trending')
+
+    # Select the first video on the page
+    video = page.querySelector('a.video-feed-item-wrapper')
+    
+    # Get the video URL
+    video_url = video.getAttribute('href')
+
     # Download the video
-    await page.download_file(video_src, 'tiktok_video.mp4')
+    page.goto(video_url)
+    page.waitForSelector('video')
+    video_data = page.querySelector('video').screenshot()
+    with open('video.mp4', 'wb') as f:
+        f.write(video_data)
+        
+#Login to Youtube
+    page.goto('https://accounts.google.com/signin/v2/identifier?service=youtube&uilel=3&passive=true&continue=https%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26app%3Ddesktop%26hl%3Den%26next%3Dhttps%253A%252F%252Fwww.youtube.com%252F&hl=en&ec=65620&flowName=GlifWebSignIn&flowEntry=ServiceLogin')
+    email_input = page.querySelector('input#identifierId')
+    email_input.type(email)
+    next_btn = page.querySelector('div#identifierNext > span > span')
+    next_btn.click()
+    pass_input = page.querySelector('input[name="password"]')
+    pass_input.type(password)
+    signin_btn = page.querySelector('div#passwordNext > span > span')
+    signin_btn.click()
 
-# Upload the video to YouTube
-from selenium import webdriver
-from selenium.webdriver.common.by import By
+#Upload video
+    upload_btn = page.querySelector('#logo-icon-container > yt-img-shadow > img')
+    upload_btn.click()
+    upload_vid_btn = page.querySelector('paper-button#upload-prompt-box > div > input')
+    upload_vid_btn.uploadFile('video.mp4')
+    upload_confirm_btn = page.querySelector('#start-upload-button-single > span > span')
+    upload_confirm_btn.click()
 
-# Set up the web driver
-driver = webdriver.Chrome()
-# Go to YouTube
-driver.get('https://www.youtube.com/')
-# Log in with email and password
-driver.find_element_by_name('identifier').getenv("EMAIL")
-driver.find_element_by_name('password').getenv("PASSWORD")
-driver.find_element(By.XPATH, '//*[@id="identifierNext"]/span/span').click()
-# Go to upload page
-driver.get('https://www.youtube.com/upload')
-# Upload the video
-driver.find_element_by_name('video').send_keys('tiktok_video.mp4')
-# Publish the video
-driver.find_element_by_name('publish').click()
+#Done
+    print("Video successfully uploaded!")
