@@ -33,8 +33,8 @@ driver = webdriver.Chrome()
 # Go to YouTube
 driver.get('https://www.youtube.com/')
 # Log in with email and password
-driver.find_element_by_name('identifier').send_keys('<EMAIL>')
-driver.find_element_by_name('password').send_keys('<PASSWORD>')
+driver.find_element_by_name('identifier').getenv("EMAIL")
+driver.find_element_by_name('password').getenv("PASSWORD")
 driver.find_element(By.XPATH, '//*[@id="identifierNext"]/span/span').click()
 # Go to upload page
 driver.get('https://www.youtube.com/upload')
