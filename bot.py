@@ -1,15 +1,17 @@
 import playwright
+from playwright.sync_api import sync_playwright
 import os
 
 email = os.environ.get('email')
 password = os.environ.get('password')
 
-# Create a new Playwright instance
-with playwright.chromium.launch() as browser:
-    page = browser.newPage()
-
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        browser = browser.new_context(
+            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.64 Safari/537.36")
+        page = browser.new_page()
     # Open the TikTok trending page
-    page.goto('https://www.tiktok.com/trending')
+    page.goto('https://www.tiktok.com/trending', timeout = 30000)
 
     # Select the first video on the page
     video = page.querySelector('a.video-feed-item-wrapper')
