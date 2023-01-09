@@ -1,6 +1,9 @@
 import playwright
 import os
 
+email = os.environ.get('email')
+password = os.environ.get('password')
+
 # Create a new Playwright instance
 with playwright.chromium.launch() as browser:
     page = browser.newPage()
