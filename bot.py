@@ -8,10 +8,10 @@ with sync_playwright() as p:
     browser = p.chromium.launch()
     page = browser.newPage()
     # Open the TikTok trending page
-    page.goto('https://www.tiktok.com/trending', timeout = 30000)
+    page.goto('https://proxitok.pabloferreiro.es/tag/fyp', timeout = 30000)
 
     # Select the first video on the page
-    video = page.querySelector('a.video-feed-item-wrapper')
+    video = page.querySelector('body > section.section > div.container > article:nth-child(1) > div > div:nth-child(8) > div:nth-child(2) > div.dropdown-menu > div > a:nth-child(2)')
     
     # Get the video URL
     video_url = video.getAttribute('href')
