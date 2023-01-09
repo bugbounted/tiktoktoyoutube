@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/playwright:v1.29.1-focal
+FROM mcr.microsoft.com/playwright:v1.23.0-focal
 
 ARG CACHEBUST=1
 
