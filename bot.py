@@ -1,4 +1,3 @@
-import playwright
 from playwright.sync_api import sync_playwright
 import os
 
@@ -7,8 +6,6 @@ password = os.environ.get('password')
 
 with sync_playwright() as p:
     browser = p.chromium.launch()
-    browser = browser.new_context(
-            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.64 Safari/537.36")
     page = browser.newPage()
     # Open the TikTok trending page
     page.goto('https://www.tiktok.com/trending', timeout = 30000)
